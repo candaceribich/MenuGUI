@@ -1,0 +1,72 @@
+import javax.swing.*;
+import java.awt.*;
+import java.io.FileWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+
+public class MenuGUI {
+    public static void main(String[] args) {
+
+        JFrame f = new JFrame("Menu GUI");
+        f.setSize(300, 200); 
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Panel 
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        f.setContentPane(mainPanel);
+
+        // Text area 
+        JTextArea box = new JTextArea();
+        box.setOpaque(false);
+        box.setLineWrap(true);
+
+        JScrollPane scroll = new JScrollPane(box);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+
+        mainPanel.add(scroll, BorderLayout.CENTER);
+
+        // Menu bar
+        JMenuBar bar = new JMenuBar();
+        JMenu m = new JMenu("Menu");
+        bar.add(m);
+        f.setJMenuBar(bar);
+
+        JMenuItem i1 = new JMenuItem("Date/Time");
+        JMenuItem i2 = new JMenuItem("Save log.txt");
+        JMenuItem i3 = new JMenuItem("Random Green");
+        JMenuItem i4 = new JMenuItem("Exit");
+
+        m.add(i1); m.add(i2); m.add(i3); m.add(i4);
+
+        // Print date/time
+        i1.addActionListener(e -> {
+            box.setText(LocalDateTime.now().format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        });
+
+        // Save file
+        i2.addActionListener(e -> {
+            try (FileWriter w = new FileWriter("log.txt")) {
+                w.write(box.getText());
+                JOptionPane.showMessageDialog(f, "Saved to log.txt");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(f, "Error saving file.");
+            }
+        });
+
+        // Random green background
+        i3.addActionListener(e -> {
+            int g = 100 + new Random().nextInt(156);
+            Color c = new Color(0, g, 0);
+            mainPanel.setBackground(c); 
+            JOptionPane.showMessageDialog(f, "Green hue: " + c);
+        });
+
+        // Exit
+        i4.addActionListener(e -> System.exit(0));
+
+        f.setVisible(true);
+    }
+}
